@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <title>Hariri Shamba — AgriSmart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">🌱 AgriSmart</div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('shamba.mashamba') }}" class="active">Mashamba</a>
+            <a href="{{ url_for('sensor.sensorer') }}">Sensorer</a>
+            <span class="nav-user">👤 {{ session.mtumiaji_jina }}</span>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-delete">Toka</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="page-header">
+            <h1>✏️ Hariri Shamba</h1>
+            <a href="{{ url_for('shamba.mashamba') }}" class="btn btn-secondary">← Rudi</a>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="form-card">
+            <form method="POST">
+                <div class="form-group">
+                    <label>Jina la Shamba</label>
+                    <input type="text" name="jina" value="{{ shamba.jina }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Eneo</label>
+                    <input type="text" name="eneo" value="{{ shamba.eneo }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Ukubwa (Hekta)</label>
+                    <input type="number" name="ukubwa_hekta" step="0.01" value="{{ shamba.ukubwa_hekta }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Aina ya Mazao</label>
+                    <select name="aina_mazao" required>
+                        {% for mazao in ['Mahindi','Mpunga','Viazi','Maharagwe','Ndizi','Kahawa','Chai','Nyanya'] %}
+                        <option {% if shamba.aina_mazao == mazao %}selected{% endif %}>{{ mazao }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tarehe Ilianzishwa</label>
+                    <input type="date" name="tarehe_ilianzishwa" value="{{ shamba.tarehe_ilianzishwa }}" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Hifadhi Mabadiliko ✅</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <title>Ongeza Shamba — AgriSmart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">🌱 AgriSmart</div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('shamba.mashamba') }}" class="active">Mashamba</a>
+            <a href="{{ url_for('sensor.sensorer') }}">Sensorer</a>
+            <span class="nav-user">👤 {{ session.mtumiaji_jina }}</span>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-delete">Toka</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="page-header">
+            <h1>➕ Ongeza Shamba</h1>
+            <a href="{{ url_for('shamba.mashamba') }}" class="btn btn-secondary">← Rudi</a>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="form-card">
+            <form method="POST">
+                <div class="form-group">
+                    <label>Jina la Shamba</label>
+                    <input type="text" name="jina" placeholder="mf. Shamba A" required>
+                </div>
+                <div class="form-group">
+                    <label>Eneo</label>
+                    <input type="text" name="eneo" placeholder="mf. Mbeya Vijijini" required>
+                </div>
+                <div class="form-group">
+                    <label>Ukubwa (Hekta)</label>
+                    <input type="number" name="ukubwa_hekta" step="0.01" min="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label>Aina ya Mazao</label>
+                    <select name="aina_mazao" required>
+                        <option value="">-- Chagua --</option>
+                        <option>Mahindi</option><option>Mpunga</option>
+                        <option>Viazi</option><option>Maharagwe</option>
+                        <option>Ndizi</option><option>Kahawa</option>
+                        <option>Chai</option><option>Nyanya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tarehe Ilianzishwa</label>
+                    <input type="date" name="tarehe_ilianzishwa" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Hifadhi ✅</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

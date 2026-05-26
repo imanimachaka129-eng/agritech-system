@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <title>Mashamba — AgriSmart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">🌱 AgriSmart</div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('shamba.mashamba') }}" class="active">Mashamba</a>
+            <a href="{{ url_for('sensor.sensorer') }}">Sensorer</a>
+            <span class="nav-user">👤 {{ session.mtumiaji_jina }}</span>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-delete">Toka</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="page-header">
+            <h1>🌾 Mashamba Yangu</h1>
+            <a href="{{ url_for('shamba.ongeza_shamba') }}" class="btn btn-primary">+ Ongeza Shamba</a>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th><th>Jina</th><th>Eneo</th><th>Ukubwa</th>
+                    <th>Mazao</th><th>Sensorer</th><th>Tarehe</th><th>Vitendo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in mashamba %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td><strong>{{ s.jina }}</strong></td>
+                    <td>{{ s.eneo }}</td>
+                    <td>{{ s.ukubwa_hekta }} ha</td>
+                    <td>{{ s.aina_mazao }}</td>
+                    <td><span class="badge">{{ s.idadi_sensorer }} sensor</span></td>
+                    <td>{{ s.tarehe_ilianzishwa }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('shamba.hariri_shamba', id=s.id) }}" class="btn btn-sm btn-edit">Hariri</a>
+                        <form method="POST" action="{{ url_for('shamba.futa_shamba', id=s.id) }}"
+                              onsubmit="return confirm('Futa shamba hili?')">
+                            <button type="submit" class="btn btn-sm btn-delete">Futa</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="8" style="text-align:center;padding:30px;color:#888;">
+                        Hakuna mashamba. <a href="{{ url_for('shamba.ongeza_shamba') }}">Ongeza la kwanza!</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

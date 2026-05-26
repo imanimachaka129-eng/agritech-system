@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <title>Hariri Sensor — AgriSmart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">🌱 AgriSmart</div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('shamba.mashamba') }}">Mashamba</a>
+            <a href="{{ url_for('sensor.sensorer') }}" class="active">Sensorer</a>
+            <span class="nav-user">👤 {{ session.mtumiaji_jina }}</span>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-delete">Toka</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="page-header">
+            <h1>✏️ Hariri Sensor</h1>
+            <a href="{{ url_for('sensor.sensorer') }}" class="btn btn-secondary">← Rudi</a>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="form-card">
+            <form method="POST">
+                <div class="form-group">
+                    <label>Shamba</label>
+                    <select name="shamba_id" required>
+                        {% for m in mashamba %}
+                        <option value="{{ m.id }}" {% if m.id == sensor.shamba_id %}selected{% endif %}>
+                            {{ m.jina }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Aina ya Sensor</label>
+                    <select name="aina" required>
+                        {% for aina in ['unyevu','joto','pH','NPK'] %}
+                        <option {% if sensor.aina == aina %}selected{% endif %}>{{ aina }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Thamani</label>
+                    <input type="number" name="thamani" step="0.01" value="{{ sensor.thamani }}" required>
+                </div>
+                <div class="form-group">
+                    <label>Kipimo</label>
+                    <select name="kipimo" required>
+                        {% for k in ['%','°C','pH','mg/kg'] %}
+                        <option {% if sensor.kipimo == k %}selected{% endif %}>{{ k }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Hali</label>
+                    <select name="hali" required>
+                        {% for h in ['nzuri','tahadhari','hatari'] %}
+                        <option {% if sensor.hali == h %}selected{% endif %}>{{ h }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Hifadhi Mabadiliko ✅</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

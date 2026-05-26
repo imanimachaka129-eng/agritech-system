@@ -1,0 +1,6 @@
+agrismart.db
+__pycache__/
+*.pyc
+.env
+ngrok.exe
+wokwi-cli-win64.exe

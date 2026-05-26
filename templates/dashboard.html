@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <!-- Auto refresh kila sekunde 15 -->
+    <meta http-equiv="refresh" content="15">
+    <meta charset="UTF-8">
+    <title>Dashboard — AgriSmart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">🌱 AgriSmart</div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard.dashboard') }}" class="active">Dashboard</a>
+            <a href="{{ url_for('shamba.mashamba') }}">Mashamba</a>
+            <a href="{{ url_for('sensor.sensorer') }}">Sensorer</a>
+            <span class="nav-user">👤 {{ session.mtumiaji_jina }}</span>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-delete">Toka</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="page-header">
+            <h1>📊 Dashboard</h1>
+            <span style="color:#888;font-size:14px">Karibu, {{ session.mtumiaji_jina }}!</span>
+        </div>
+        <div class="kpi-grid">
+            <div class="kpi-card kpi-green">
+                <div class="kpi-icon">🌾</div>
+                <div class="kpi-info">
+                    <div class="kpi-value">{{ jumla_mashamba }}</div>
+                    <div class="kpi-label">Mashamba Yote</div>
+                </div>
+            </div>
+            <div class="kpi-card kpi-blue">
+                <div class="kpi-icon">📡</div>
+                <div class="kpi-info">
+                    <div class="kpi-value">{{ jumla_sensorer }}</div>
+                    <div class="kpi-label">Sensorer Zote</div>
+                </div>
+            </div>
+            <div class="kpi-card kpi-amber">
+                <div class="kpi-icon">⚠️</div>
+                <div class="kpi-info">
+                    <div class="kpi-value">{{ jumla_tahadhari }}</div>
+                    <div class="kpi-label">Tahadhari</div>
+                </div>
+            </div>
+            <div class="kpi-card kpi-red">
+                <div class="kpi-icon">🔴</div>
+                <div class="kpi-info">
+                    <div class="kpi-value">{{ jumla_hatari }}</div>
+                    <div class="kpi-label">Hatari</div>
+                </div>
+            </div>
+        </div>
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>Hali za Sensorer</h3>
+                <canvas id="haliChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Sensorer kwa Aina</h3>
+                <canvas id="ainaChart"></canvas>
+            </div>
+        </div>
+        <div class="dash-card">
+            <h3>🌾 Hali ya Mashamba</h3>
+            <table class="table" style="margin-top:16px">
+                <thead>
+                    <tr>
+                        <th>Shamba</th>
+                        <th>Sensorer</th>
+                        <th>Tahadhari</th>
+                        <th>Hatari</th>
+                        <th>Hali</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in mashamba_hali %}
+                    <tr>
+                        <td><strong>{{ m.jina }}</strong></td>
+                        <td>{{ m.idadi_sensorer }}</td>
+                        <td>
+                            {% if m.tahadhari %}
+                                <span class="badge badge-tahadhari">{{ m.tahadhari }} ⚠️</span>
+                            {% else %}
+                                <span style="color:#aaa">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if m.hatari %}
+                                <span class="badge badge-hatari">{{ m.hatari }} 🔴</span>
+                            {% else %}
+                                <span style="color:#aaa">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if m.hatari %}
+                                <span class="badge badge-hatari">Hatari</span>
+                            {% elif m.tahadhari %}
+                                <span class="badge badge-tahadhari">Tahadhari</span>
+                            {% else %}
+                                <span class="badge badge-nzuri">Nzuri ✅</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="dash-card" style="margin-top:20px">
+            <h3>📡 Sensorer za Hivi Karibuni</h3>
+            <table class="table" style="margin-top:16px">
+                <thead>
+                    <tr>
+                        <th>Shamba</th>
+                        <th>Aina</th>
+                        <th>Thamani</th>
+                        <th>Hali</th>
+                        <th>Wakati</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in sensorer_karibuni %}
+                    <tr>
+                        <td><strong>{{ s.jina_shamba }}</strong></td>
+                        <td>{{ s.aina }}</td>
+                        <td>{{ s.thamani }} {{ s.kipimo }}</td>
+                        <td>
+                            {% if s.hali == 'nzuri' %}
+                                <span class="badge badge-nzuri">✅ Nzuri</span>
+                            {% elif s.hali == 'tahadhari' %}
+                                <span class="badge badge-tahadhari">⚠️ Tahadhari</span>
+                            {% else %}
+                                <span class="badge badge-hatari">🔴 Hatari</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ s.wakati }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        const haliData = {{ hali_data | tojson }};
+        const ainaData = {{ aina_data | tojson }};
+        const haliLabels = haliData.map(d => d.hali);
+        const haliValues = haliData.map(d => d.idadi);
+        const haliColors = haliLabels.map(h => {
+            if (h === 'nzuri') return '#1D9E75';
+            if (h === 'tahadhari') return '#EF9F27';
+            return '#D85A30';
+        });
+        new Chart(document.getElementById('haliChart'), {
+            type: 'doughnut',
+            data: {
+                labels: haliLabels,
+                datasets: [{ data: haliValues, backgroundColor: haliColors, borderWidth: 2, borderColor: '#fff' }]
+            },
+            options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        });
+        new Chart(document.getElementById('ainaChart'), {
+            type: 'bar',
+            data: {
+                labels: ainaData.map(d => d.aina),
+                datasets: [{ label: 'Idadi', data: ainaData.map(d => d.idadi), backgroundColor: '#378ADD', borderRadius: 6 }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+        });
+    </script>
+</body>
+</html>

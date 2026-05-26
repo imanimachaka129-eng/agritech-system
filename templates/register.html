@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <title>Jisajili — AgriSmart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-logo">🌱 AgriSmart</div>
+        <h2>Fungua Akaunti Mpya</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="POST">
+            <div class="form-group">
+                <label>Jina Lako</label>
+                <input type="text" name="jina" placeholder="Jina kamili" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="mfano@email.com" required>
+            </div>
+            <div class="form-group">
+                <label>Nywila</label>
+                <input type="password" name="password" placeholder="Herufi 6 au zaidi" required>
+            </div>
+            <div class="form-group">
+                <label>Thibitisha Nywila</label>
+                <input type="password" name="confirm" placeholder="Rudia nywila" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">Jisajili ✅</button>
+        </form>
+        <p class="auth-link">
+            Una akaunti? <a href="{{ url_for('auth.login') }}">Ingia hapa</a>
+        </p>
+    </div>
+</body>
+</html>

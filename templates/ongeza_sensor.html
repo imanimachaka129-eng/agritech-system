@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <title>Ongeza Sensor — AgriSmart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">🌱 AgriSmart</div>
+        <div class="nav-links">
+            <a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('shamba.mashamba') }}">Mashamba</a>
+            <a href="{{ url_for('sensor.sensorer') }}" class="active">Sensorer</a>
+            <span class="nav-user">👤 {{ session.mtumiaji_jina }}</span>
+            <a href="{{ url_for('auth.logout') }}" class="btn btn-sm btn-delete">Toka</a>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="page-header">
+            <h1>➕ Ongeza Sensor</h1>
+            <a href="{{ url_for('sensor.sensorer') }}" class="btn btn-secondary">← Rudi</a>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="form-card">
+            <form method="POST">
+                <div class="form-group">
+                    <label>Shamba</label>
+                    <select name="shamba_id" required>
+                        <option value="">-- Chagua Shamba --</option>
+                        {% for m in mashamba %}
+                        <option value="{{ m.id }}">{{ m.jina }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Aina ya Sensor</label>
+                    <select name="aina" required>
+                        <option value="">-- Chagua --</option>
+                        <option value="unyevu">Unyevu</option>
+                        <option value="joto">Joto</option>
+                        <option value="pH">pH</option>
+                        <option value="NPK">NPK</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Thamani</label>
+                    <input type="number" name="thamani" step="0.01" placeholder="mf. 68.5" required>
+                </div>
+                <div class="form-group">
+                    <label>Kipimo</label>
+                    <select name="kipimo" required>
+                        <option value="">-- Chagua --</option>
+                        <option value="%">% (Unyevu)</option>
+                        <option value="°C">°C (Joto)</option>
+                        <option value="pH">pH</option>
+                        <option value="mg/kg">mg/kg (NPK)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Hali</label>
+                    <select name="hali" required>
+                        <option value="nzuri">✅ Nzuri</option>
+                        <option value="tahadhari">⚠️ Tahadhari</option>
+                        <option value="hatari">🔴 Hatari</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Hifadhi ✅</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
