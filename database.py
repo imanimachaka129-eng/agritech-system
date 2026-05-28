@@ -1,8 +1,11 @@
 import sqlite3
 import os
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-DATABASE = os.path.join(BASE_DIR, 'agrismart.db')
+if os.environ.get('RENDER'):
+    DATABASE = '/tmp/agrismart.db'
+else:
+    BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+    DATABASE = os.path.join(BASE_DIR, 'agrismart.db')
 
 def get_db():
     conn = sqlite3.connect(DATABASE)

@@ -5,10 +5,10 @@ from database import init_db
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# ❌ IMPORTANT: usiite init_db() hapa production
-# init_db()
+# 🔥 FORCE DB INIT BEFORE EVERYTHING
+with app.app_context():
+    init_db()
 
-# Blueprints
 from routes.auth import auth_bp
 from routes.shamba import shamba_bp
 from routes.sensor import sensor_bp
@@ -21,12 +21,9 @@ app.register_blueprint(sensor_bp)
 app.register_blueprint(dashboard_bp)
 app.register_blueprint(api_bp)
 
-
 @app.route('/')
 def index():
     return redirect(url_for('auth.login'))
 
-
-# Run locally only
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
