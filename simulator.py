@@ -6,7 +6,8 @@ import time
 from datetime import datetime
 from database import get_db  # ← import moja kwa moja
 
-FLASK_URL  = 'http://127.0.0.1:5000'
+#FLASK_URL  = 'http://127.0.0.1:5000'
+FLASK_URL = 'https://agritech-system.onrender.com'
 DEVICE_KEY = 'agrismart_device_2026'
 
 HEADERS = {
