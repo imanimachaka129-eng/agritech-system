@@ -1,34 +1,16 @@
-function togglePassword() {
+function togglePassword(id){
 
     let password =
-        document.getElementById("password");
+        document.getElementById(id);
 
-    if (password.type === "password") {
+    if(password.type === "password"){
 
         password.type = "text";
 
-    } else {
+    }else{
 
         password.type = "password";
 
     }
 
 }
-
-function toggleConfirmPassword() {
-
-    let confirmPassword =
-        document.getElementById("confirm_password");
-
-    if (confirmPassword.type === "password") {
-
-        confirmPassword.type = "text";
-
-    } else {
-
-        confirmPassword.type = "password";
-
-    }
-
-}
-
