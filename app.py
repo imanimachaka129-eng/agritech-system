@@ -5,9 +5,7 @@ from database import init_db
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# 🔥 FORCE DB INIT BEFORE EVERYTHING
-with app.app_context():
-    init_db()
+init_db()
 
 from routes.auth import auth_bp
 from routes.shamba import shamba_bp
@@ -26,4 +24,4 @@ def index():
     return redirect(url_for('auth.login'))
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
